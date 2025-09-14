@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useState } from 'react'
 import { Map } from 'react-map-gl/maplibre'
 import { DeckGL } from '@deck.gl/react'
 import { HeatmapLayer } from '@deck.gl/aggregation-layers'
+import { PickingInfo } from '@deck.gl/core'
 import { WasteReport } from '@/lib/types'
-import { supabase } from '@/lib/supabase'
 
 // MapTiler style URL with API key from environment variables
 const MAPTILER_STYLE = `https://api.maptiler.com/maps/streets/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`
@@ -51,7 +51,7 @@ export default function MapComponent({ reports, onReportClick }: MapComponentPro
       ],
       aggregation: 'SUM',
       pickable: true,
-      onClick: (info: any) => {
+      onClick: (info: PickingInfo<WasteReport>) => {
         // Handle click events on heatmap
         if (info.object && onReportClick) {
           onReportClick(info.object)
