@@ -67,7 +67,7 @@ export default function MapComponent({ reports, onReportClick }: MapComponentPro
       {/* Deck.gl overlay with heatmap layer */}
       <DeckGL
         viewState={viewState}
-        onViewStateChange={({ viewState }) => setViewState(viewState)}
+        onViewStateChange={(params) => setViewState(params.viewState as typeof INITIAL_VIEW_STATE)}
         layers={layers}
         controller={true}
         style={{ width: '100%', height: '100%' }}
