@@ -189,7 +189,7 @@ npm run start
 - HTTPS required for geolocation access
 - Mobile-responsive design
 
-## Contributing
+## Contributinga
 
 1. Fork the repository
 2. Create a feature branch
