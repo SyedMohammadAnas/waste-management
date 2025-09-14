@@ -51,11 +51,13 @@ export default function MapComponent({ reports, onReportClick }: MapComponentPro
       ],
       aggregation: 'SUM',
       pickable: true,
-      onClick: (info: PickingInfo<WasteReport>) => {
+      onClick: (info: PickingInfo<WasteReport>, event?: any) => {
         // Handle click events on heatmap
         if (info.object && onReportClick) {
           onReportClick(info.object)
+          return true // Indicate event was handled
         }
+        return false // Event not handled, continue propagation
       },
     }),
   ]
