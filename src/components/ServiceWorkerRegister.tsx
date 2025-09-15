@@ -2,6 +2,12 @@
 
 import { useEffect } from 'react'
 
+// Type definition for PWA install prompt event
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+}
+
 /**
  * Service Worker Registration Component for PWA
  * Handles registration and updates for the service worker
@@ -48,23 +54,23 @@ export default function ServiceWorkerRegister() {
           console.error('Service Worker registration failed:', error)
         })
 
-      // Also register for app installation prompt
-      let deferredPrompt: any = null
-
-      window.addEventListener('beforeinstallprompt', (e) => {
+                  // Also register for app installation prompt
+      window.addEventListener('beforeinstallprompt', (e: Event) => {
         console.log('PWA install prompt triggered')
         // Prevent the mini-infobar from appearing on mobile
         e.preventDefault()
-        // Store the event for later use
-        deferredPrompt = e
+
+        // Store the event for potential future use (e.g., custom install button)
+        const deferredPrompt = e as BeforeInstallPromptEvent
 
         // Optionally show custom install UI
         // For now, we'll let the browser handle it naturally
+        // Future: could use deferredPrompt.prompt() for custom install flow
+        console.log('Install prompt deferred:', deferredPrompt)
       })
 
       window.addEventListener('appinstalled', () => {
         console.log('PWA was installed successfully')
-        deferredPrompt = null
       })
     } else if (process.env.NODE_ENV === 'development') {
       console.log('Service Worker registration skipped in development mode')
