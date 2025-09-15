@@ -29,6 +29,12 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden; /* Prevent scrolling for full-screen map */
+  /* PWA mobile optimizations */
+  -webkit-touch-callout: none; /* Disable callout on iOS */
+  -webkit-user-select: none;   /* Disable text selection */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+  touch-action: manipulation;  /* Optimize touch interactions */
+  overscroll-behavior: none;   /* Prevent bounce/refresh */
 }
 
 /* Ensure map containers take full dimensions */
@@ -70,4 +76,100 @@ body {
   .backdrop-blur-sm {
     background-color: rgba(255, 255, 255, 0.95);
   }
+  .backdrop-blur-md {
+    background-color: rgba(255, 255, 255, 0.98);
+  }
+}
+
+/* PWA safe area support for modern devices with notches */
+.top-safe {
+  top: env(safe-area-inset-top, 1rem);
+}
+
+.bottom-safe {
+  bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+.left-safe {
+  left: env(safe-area-inset-left, 1rem);
+}
+
+.right-safe {
+  right: env(safe-area-inset-right, 1rem);
+}
+
+/* Touch-friendly button styles */
+.touch-target {
+  min-height: 44px; /* iOS recommended minimum touch target */
+  min-width: 44px;
+}
+
+/* Prevent selection on interactive elements */
+button, [role="button"], .select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling for modals and containers */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars on mobile while keeping functionality */
+@media (max-width: 768px) {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Mobile modal slide-up animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Pulse animation for live indicator */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

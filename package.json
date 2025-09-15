@@ -14,6 +14,7 @@
     "@deck.gl/react": "^9.1.14",
     "@supabase/supabase-js": "^2.57.4",
     "deck.gl": "^9.1.14",
+    "lucide-react": "^0.544.0",
     "maplibre-gl": "^5.7.1",
     "next": "15.5.3",
     "react": "19.1.0",

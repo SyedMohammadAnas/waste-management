@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Map as MapIcon, BarChart3 } from 'lucide-react'
 import { Map } from 'react-map-gl/maplibre'
 import { DeckGL } from '@deck.gl/react'
 import { HeatmapLayer } from '@deck.gl/aggregation-layers'
@@ -79,14 +80,18 @@ export default function MapComponent({ reports, onReportClick }: MapComponentPro
         />
       </DeckGL>
 
-      {/* Map controls overlay */}
-      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-        <h2 className="text-lg font-semibold text-gray-800 mb-1">
-          Waste Reports
-        </h2>
-        <p className="text-sm text-gray-600">
-          {reports.length} reports • Heat intensity shows problem areas
-        </p>
+      {/* Map controls overlay - mobile optimized */}
+      <div className="absolute top-safe left-4 bg-white/95 backdrop-blur-md rounded-xl
+                      p-3 shadow-xl border border-white/20 select-none
+                      hidden sm:block">
+                 <h2 className="text-base font-bold text-gray-800 mb-1 flex items-center gap-2">
+           <MapIcon size={16} className="text-emerald-600" />
+           Heat Map
+         </h2>
+         <p className="text-xs text-gray-600 flex items-center gap-1">
+           <BarChart3 size={12} className="text-gray-500" />
+           {reports.length} reports • Density shows problem areas
+         </p>
       </div>
     </div>
   )

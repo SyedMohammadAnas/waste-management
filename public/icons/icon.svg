@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with theme color -->
+  <circle cx="256" cy="256" r="240" fill="#059669"/>
+
+  <!-- Main waste bin icon -->
+  <path d="M160 160H352V432C352 449.673 337.673 464 320 464H192C174.327 464 160 449.673 160 432V160Z" fill="white"/>
+
+  <!-- Bin lid -->
+  <rect x="144" y="128" width="224" height="32" rx="16" fill="white"/>
+
+  <!-- Handle on lid -->
+  <rect x="224" y="96" width="64" height="32" rx="16" fill="white"/>
+
+  <!-- Waste lines inside bin -->
+  <rect x="192" y="208" width="128" height="8" rx="4" fill="#059669" opacity="0.7"/>
+  <rect x="192" y="240" width="96" height="8" rx="4" fill="#059669" opacity="0.7"/>
+  <rect x="192" y="272" width="112" height="8" rx="4" fill="#059669" opacity="0.7"/>
+
+  <!-- Recycling symbol -->
+  <circle cx="400" cy="112" r="48" fill="white"/>
+  <path d="M376 88L376 104L392 104L376 120L392 136L416 112L392 88L376 88Z" fill="#059669"/>
+  <path d="M400 88C411.046 88 420 96.954 420 108" stroke="#059669" stroke-width="4" fill="none"/>
+  <path d="M420 116C420 127.046 411.046 136 400 136" stroke="#059669" stroke-width="4" fill="none"/>
+  <path d="M392 136C380.954 136 372 127.046 372 116" stroke="#059669" stroke-width="4" fill="none"/>
+</svg>

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import Image from 'next/image'
+import { Camera, MapPin, Upload, X, CheckCircle, AlertCircle, Info, Image as ImageIcon } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { getCurrentLocation } from '@/utils/geolocation'
 import { CreateWasteReport } from '@/lib/types'
@@ -135,17 +136,19 @@ export default function UploadComponent({ onUploadSuccess }: UploadComponentProp
   }
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
-      <h3 className="text-lg font-semibold text-gray-800 mb-3">
+    <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20">
+      <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <MapPin size={20} className="text-emerald-600" />
         Report Waste Issue
       </h3>
 
-      {/* File input */}
+      {/* File input - mobile optimized */}
       <div className="mb-4">
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
+          capture="environment" /* Use rear camera on mobile */
           onChange={handleFileSelect}
           className="hidden"
           id="photo-upload"
@@ -153,12 +156,22 @@ export default function UploadComponent({ onUploadSuccess }: UploadComponentProp
         />
         <label
           htmlFor="photo-upload"
-          className="block w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-blue-400 transition-colors"
+          className="block w-full p-4 border-2 border-dashed border-gray-300 rounded-xl
+                     text-center cursor-pointer hover:border-emerald-400 active:border-emerald-500
+                     transition-colors touch-target select-none
+                     focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-200"
         >
           {selectedFile ? (
-            <span className="text-green-600">📷 {selectedFile.name}</span>
+            <div className="flex items-center justify-center gap-2 text-emerald-600">
+              <ImageIcon size={24} />
+              <span className="font-medium truncate max-w-[200px]">{selectedFile.name}</span>
+            </div>
           ) : (
-            <span className="text-gray-600">📷 Click to select photo</span>
+            <div className="flex flex-col items-center gap-2 text-gray-600">
+              <Camera size={32} />
+              <span className="font-medium">Tap to take photo</span>
+              <span className="text-xs text-gray-500">or select from gallery</span>
+            </div>
           )}
         </label>
       </div>
@@ -176,43 +189,78 @@ export default function UploadComponent({ onUploadSuccess }: UploadComponentProp
         </div>
       )}
 
-      {/* Action buttons */}
-      <div className="flex gap-2 mb-3">
+      {/* Action buttons - mobile optimized */}
+      <div className="flex gap-3 mb-4">
         <button
           onClick={handleUpload}
           disabled={!selectedFile || isUploading}
-          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-medium disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
+          className="flex-1 bg-emerald-600 text-white py-3 px-4 rounded-xl font-bold
+                     disabled:bg-gray-400 disabled:cursor-not-allowed
+                     hover:bg-emerald-700 active:bg-emerald-800
+                     transition-all duration-200 touch-target select-none
+                     shadow-lg disabled:shadow-none
+                     focus:ring-2 focus:ring-emerald-300"
         >
-          {isUploading ? '⏳ Uploading...' : '📍 Submit Report'}
+          {isUploading ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span>Uploading...</span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-2">
+              <Upload size={18} />
+              <span>Submit Report</span>
+            </div>
+          )}
         </button>
 
         {selectedFile && (
           <button
             onClick={clearSelection}
             disabled={isUploading}
-            className="px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            className="px-4 py-3 text-gray-600 hover:text-gray-800 active:text-gray-900
+                       hover:bg-gray-100 active:bg-gray-200 rounded-xl
+                       transition-all duration-200 touch-target select-none
+                       focus:ring-2 focus:ring-gray-300"
+            aria-label="Clear selection"
           >
-            ✕
+            <X size={18} />
           </button>
         )}
       </div>
 
-      {/* Status message */}
+      {/* Status message - mobile optimized */}
       {uploadStatus && (
-        <div className={`text-sm p-2 rounded ${
+        <div className={`text-sm p-3 rounded-xl font-medium border transition-all duration-200 ${
           uploadStatus.includes('success')
-            ? 'bg-green-100 text-green-700'
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
             : uploadStatus.includes('error') || uploadStatus.includes('failed')
-            ? 'bg-red-100 text-red-700'
-            : 'bg-blue-100 text-blue-700'
+            ? 'bg-red-50 text-red-700 border-red-200'
+            : 'bg-blue-50 text-blue-700 border-blue-200'
         }`}>
-          {uploadStatus}
+                    <div className="flex items-center gap-2">
+            {uploadStatus.includes('success') ? (
+              <CheckCircle size={16} className="text-emerald-600" />
+            ) : uploadStatus.includes('error') || uploadStatus.includes('failed') ? (
+              <AlertCircle size={16} className="text-red-600" />
+            ) : (
+              <Info size={16} className="text-blue-600" />
+            )}
+            <span>{uploadStatus}</span>
+          </div>
         </div>
       )}
 
-      {/* Instructions */}
-      <div className="text-xs text-gray-500 mt-2">
-        📱 Location access required • 🖼️ Max 5MB image files
+      {/* Instructions - mobile optimized */}
+      <div className="text-xs text-gray-500 mt-3 text-center space-y-1">
+        <div className="flex items-center justify-center gap-2">
+          <MapPin size={14} className="text-emerald-600" />
+          <span>Location access required</span>
+        </div>
+        <div className="flex items-center justify-center gap-2">
+          <ImageIcon size={14} className="text-gray-500" />
+          <span>Max 5MB image files</span>
+        </div>
       </div>
     </div>
   )

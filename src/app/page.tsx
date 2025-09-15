@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { Plus, MapPin, BarChart3, Wifi, Camera, Map, AlertTriangle, X } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { WasteReport } from '@/lib/types'
 import MapComponent from '@/components/MapComponent'
@@ -22,6 +23,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string>('')
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
 
   /**
    * Fetches all waste reports from Supabase database
@@ -89,6 +91,7 @@ export default function Home() {
    */
   const handleUploadSuccess = useCallback(() => {
     fetchReports()
+    setIsUploadModalOpen(false) // Close upload modal on success
   }, [fetchReports])
 
   /**
@@ -125,7 +128,9 @@ export default function Home() {
     return (
       <div className="h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <div className="text-red-500 text-xl mb-4">⚠️</div>
+          <div className="mb-4">
+            <AlertTriangle size={48} className="text-red-500 mx-auto" />
+          </div>
           <p className="text-red-600 mb-4">{error}</p>
           <button
             onClick={fetchReports}
@@ -139,52 +144,122 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-screen relative overflow-hidden">
+    <div className="h-screen w-screen relative overflow-hidden select-none">
       {/* Main map view with heatmap overlay */}
       <MapComponent
         reports={reports}
         onReportClick={handleReportClick}
       />
 
-      {/* Upload component positioned in the top-right corner */}
-      <div className="absolute top-4 right-4 w-80 z-10">
-        <UploadComponent onUploadSuccess={handleUploadSuccess} />
-      </div>
+      {/* Mobile: Floating Report Button, Desktop: Full Upload Component */}
+      <>
+        {/* Mobile Report Button */}
+        <button
+          onClick={() => setIsUploadModalOpen(true)}
+          className="md:hidden fixed top-5 right-5 z-10
+                     bg-emerald-600 text-white p-3 rounded-full shadow-lg
+                     hover:bg-emerald-700 active:bg-emerald-800
+                     transition-all duration-200 touch-target
+                     border-2 border-white"
+          aria-label="Report waste issue"
+        >
+          <Plus size={24} strokeWidth={2.5} />
+        </button>
 
-      {/* Report detail modal */}
+        {/* Desktop Upload Component */}
+        <div className="hidden md:block absolute bottom-4 right-4 z-10 w-80">
+          <UploadComponent onUploadSuccess={handleUploadSuccess} />
+        </div>
+      </>
+
+      {/* Mobile Upload Modal */}
+      {isUploadModalOpen && (
+        <div className="md:hidden fixed inset-0 bg-black/60 z-50 flex items-end justify-center">
+          <div className="bg-white rounded-t-3xl w-full max-h-[85vh] overflow-hidden shadow-2xl animate-slideUp border-t-4 border-emerald-500">
+            <div className="flex items-center justify-between p-4 border-b bg-gray-50">
+              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <MapPin size={20} />
+                Report Waste Issue
+              </h2>
+              <button
+                onClick={() => setIsUploadModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 active:text-gray-900
+                           text-2xl leading-none touch-target select-none
+                           w-10 h-10 flex items-center justify-center rounded-full
+                           hover:bg-gray-100 active:bg-gray-200 transition-all duration-200"
+                                 aria-label="Close modal"
+               >
+                 <X size={20} />
+               </button>
+            </div>
+            <div className="p-4">
+              <UploadComponent onUploadSuccess={handleUploadSuccess} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report detail modal - mobile optimized */}
       <ReportModal
         report={selectedReport}
         isOpen={isModalOpen}
         onClose={closeModal}
       />
 
-      {/* Application footer with stats */}
-      <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg z-10">
+      {/* Mobile-first application footer with stats */}
+      <div className="absolute bottom-safe mb-5 left-5 right-4 sm:left-6 sm:right-auto
+                      bg-white/95 backdrop-blur-md rounded-xl
+                      p-3 sm:p-4 shadow-xl border border-white/20 z-10">
         <div className="text-sm text-gray-600">
-          <div className="font-semibold text-gray-800 mb-1">
-            Waste Management System
+          <div className="font-semibold text-gray-800 mb-1 text-base">
+            WasteTracker
           </div>
-          <div className="flex items-center gap-4">
-            <span>📊 {reports.length} total reports</span>
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span>Live updates</span>
+          <div className="flex items-center justify-between sm:justify-start sm:gap-4">
+            <div className="flex items-center gap-2">
+              <BarChart3 size={16} className="text-emerald-600" />
+              <span>{reports.length} reports</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Wifi size={12} className="text-emerald-500 animate-pulse" />
+              <span className="text-xs text-emerald-600 font-medium">Live</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Instructions overlay for first-time users */}
+      {/* Instructions overlay for first-time users - mobile optimized */}
       {reports.length === 0 && (
-        <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-20">
-          <div className="bg-white rounded-lg p-6 mx-4 max-w-md text-center shadow-2xl">
-            <div className="text-4xl mb-4">🗺️</div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Welcome to Waste Management
+        <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-20 p-4">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 mx-auto
+                          max-w-sm sm:max-w-md text-center shadow-2xl border border-white/20">
+            <div className="mb-4">
+              <MapPin size={48} className="text-emerald-600 mx-auto" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
+              Welcome to WasteTracker
             </h2>
-            <p className="text-gray-600 mb-4">
-              Report waste issues by uploading a photo. Your location will be captured automatically and displayed on the heat map.
+            <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+              Start reporting waste issues by uploading a photo. Your location will be captured
+              automatically and displayed on the real-time map.
             </p>
-            <div className="text-sm text-gray-500">
-              📱 Enable location access • 📷 Take a photo • 🗺️ See real-time updates
+            <div className="grid grid-cols-1 gap-3 text-sm text-gray-600">
+              <div className="flex items-center justify-center gap-2">
+                <MapPin size={18} className="text-emerald-600" />
+                <span>Enable location access</span>
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <Camera size={18} className="text-emerald-600" />
+                <span>Take a photo of waste</span>
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <Map size={18} className="text-emerald-600" />
+                <span>View real-time updates</span>
+              </div>
+            </div>
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <p className="text-xs text-gray-500">
+                Tap the upload button in the top-right to get started
+              </p>
             </div>
           </div>
         </div>
